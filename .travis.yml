@@ -12,7 +12,7 @@ matrix:
         - pip install --user cpp-coveralls
         - coveralls --help
         - wget https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
-        - tar -xzvf gmp-6.1.2.tar.bz2
+        - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
         - ./configure
         - make
@@ -273,7 +273,7 @@ matrix:
 before_install:
     - eval "${MATRIX_EVAL}"
     - wget https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
-    - tar -xzvf gmp-6.1.2.tar.bz2
+    - tar -xjvf gmp-6.1.2.tar.bz2
     - cd gmp-6.1.2
     - ./configure
     - make
