@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/spj101/exparse.svg?branch=master)](https://travis-ci.org/spj101/exparse)
+[![Coverage Status](https://coveralls.io/repos/github/spj101/exparse/badge.svg?branch=master)](https://coveralls.io/github/spj101/exparse?branch=master)
 
 # exparse
 
