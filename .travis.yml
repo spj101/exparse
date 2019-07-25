@@ -14,7 +14,7 @@ matrix:
         - wget https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -159,7 +159,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -173,7 +173,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -187,7 +187,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -201,7 +201,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -215,7 +215,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -229,7 +229,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -241,7 +241,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -253,7 +253,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -265,7 +265,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -277,7 +277,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -289,7 +289,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -301,7 +301,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -313,7 +313,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -325,7 +325,7 @@ matrix:
         - curl -O https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
         - tar -xjvf gmp-6.1.2.tar.bz2
         - cd gmp-6.1.2
-        - ./configure
+        - ./configure --enable-cxx
         - make
         - sudo make install
         - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
@@ -336,7 +336,7 @@ before_install:
     - wget https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2
     - tar -xjvf gmp-6.1.2.tar.bz2
     - cd gmp-6.1.2
-    - ./configure
+    - ./configure --enable-cxx
     - make
     - sudo make install
     - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
