@@ -1,3 +1,11 @@
+# Log Files
+*.log
+
+# Coverage
+*.gcda
+*.gcno
+*.dSYM
+
 # Prerequisites
 *.d
 
