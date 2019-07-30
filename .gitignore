@@ -1,3 +1,8 @@
+# Generated Files
+examples/binomial/binomial
+examples/formopt/formopt
+examples/*/expr.*
+
 # Log Files
 *.log
 
