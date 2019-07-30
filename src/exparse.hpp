@@ -1,16 +1,13 @@
 #ifndef EXPARSE_H
 #define EXPARSE_H
 
-#include <fstream> // ifstream
-#include <sstream> // sstream
 #include <string> // string
-#include <vector> // vector
-#include <algorithm> // remove_if
+#include <unordered_map> // unordered_map
 #include <cassert> // assert
-#include <cstdlib> // atof
-#include <cstddef> // size_t
 #include <memory> // shared_ptr, make_shared
-#include <chrono> // chrono
+#include <cstddef> // size_t
+#include <cstring> // strcmp
+//#include <cstdlib> // atof
 
 #include <gmpxx.h>
 
@@ -113,27 +110,36 @@ private:
     
     void to_number(slice_t& symbol, rational_t& result)
     {
-        for (const std::pair<std::string,rational_t>& possible_symbol : symbol_table)
-        {
-            if( symbol == possible_symbol.first )
-            {
-                result = possible_symbol.second;
-                return;
-            }
-        }
-        
+        char store;
         if ( symbol.pos+symbol.len != symbol.expression->length() )
         {
-            const char store =(*symbol.expression)[symbol.pos+symbol.len];
+            // Store character after symbol and replace with '\0'
+            store =(*symbol.expression)[symbol.pos+symbol.len];
             (*symbol.expression)[symbol.pos+symbol.len] = '\0';
-            result = rational_t(symbol.expression->c_str()+symbol.pos);
-            //        result = std::atof(symbol.expression->c_str()+symbol.pos);
-            (*symbol.expression)[symbol.pos+symbol.len] = store;
         }
-        else
+        
+        // Check if symbol is in symbol table
+        // Note: would be nicer to use find() but does not work correctly for pointer types
+        bool found = false;
+        for( const std::pair<std::string,rational_t> symbol_table_element: symbol_table)
         {
+            if ( strcmp(symbol_table_element.first.c_str(), symbol.expression->c_str()+symbol.pos) == 0)
+            {
+                result = symbol_table_element.second;
+                found = true;
+                break;
+            }
+        }
+        if(!found)
+        {
+            // Parse symbol as rational
             result = rational_t(symbol.expression->c_str()+symbol.pos);
-            //        result = std::atof(symbol.expression->c_str()+symbol.pos);
+        }
+
+        if ( symbol.pos+symbol.len != symbol.expression->length() )
+        {
+            // Restore character after symbol
+            (*symbol.expression)[symbol.pos+symbol.len] = store;
         }
     }
     
@@ -312,7 +318,7 @@ private:
     
 public:
 
-    std::vector<std::pair<std::string,rational_t>> symbol_table;
+    std::unordered_map<std::string,rational_t> symbol_table;
     
     rational_t parse_expression(std::string& expression)
     {
