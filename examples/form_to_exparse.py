@@ -3,7 +3,7 @@ mystr = ''
 # Read
 with open('expr.out', 'r') as f:
   lines = f.readlines()
-  mystr = ''.join([line.strip() for line in lines]).replace(' ','')
+  mystr = ''.join([line.strip() for line in lines]).replace(' ','').replace('\\','')
   mystr = mystr.replace(';',';\n')
 
 # Write
