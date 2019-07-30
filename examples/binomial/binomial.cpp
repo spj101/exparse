@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <string>
+#include <fstream> // ifstream
 #include <gmpxx.h>
 
 #include "exparse.hpp"

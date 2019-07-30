@@ -4,6 +4,7 @@ examples/formopt/formopt
 examples/*/expr.*
 
 # Log Files
+*.str
 *.log
 
 # Coverage
