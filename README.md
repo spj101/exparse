@@ -9,6 +9,7 @@ A polynomial to rational number parser.
 
 Prerequisites:
 * A C++11 compatible C++ compiler.
+* [GNU GMP Library](https://gmplib.org/) (tested for version 6.1.2)
 
 The exparse library is header only. Simply put the single header file somewhere reachable from your project or directly into your project tree itself then `#include "exparse.hpp"` in your project.
 
