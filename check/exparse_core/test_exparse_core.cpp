@@ -146,3 +146,30 @@ TEST_CASE( "Large Numbers" , "[exparse]" )
     };
     
 };
+
+TEST_CASE( "Edge Cases" , "[exparse]" )
+{
+    typedef mpq_class rational_t;
+    
+    std::string n0 = "5^0";
+    std::string x0 = "x^0";
+    
+    SECTION( "Power 0 (number)" )
+    {
+        Exparse parser;
+        
+        REQUIRE( parser.parse_expression(n0) == 1_mpq );
+    };
+    
+    SECTION( "Power 0 (symbol)" )
+    {
+        Exparse parser;
+        parser.symbol_table =
+        {
+            {"x",3_mpq/2_mpq}
+        };
+
+        REQUIRE( parser.parse_expression(x0) == 1_mpq );
+    };
+    
+};
