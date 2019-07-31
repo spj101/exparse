@@ -22,7 +22,7 @@ The exparse library is header only. Simply put the single header file somewhere 
 
 Example: (taken from `examples/intro`) Parse the expression `x+2*y^3` for `x=5/6` and `y=7/3`
 
-```
+```cpp
 #include <iostream>
 #include <gmpxx.h>
 #include "exparse.hpp"
@@ -48,12 +48,12 @@ int main()
 ```
 
 Compile:
-```
+```shell
 $ c++ -std=c++11 -O3 -I<path/to/exparse.hpp> intro.cpp -lgmpxx -lgmp -o intro
 ```
 
 Output:
-```
+```shell
 1417/54
 ```
 
