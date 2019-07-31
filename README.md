@@ -3,7 +3,12 @@
 
 # exparse
 
-A polynomial to rational number parser.
+A polynomial to rational number parser.  
+
+Supports:
+* operations `+ - * / ^`  
+* integer powers only
+* brackets are not supported
 
 ## Installation
 
@@ -12,6 +17,61 @@ Prerequisites:
 * [GNU GMP Library](https://gmplib.org/) (tested for version 6.1.2)
 
 The exparse library is header only. Simply put the single header file somewhere reachable from your project or directly into your project tree itself then `#include "exparse.hpp"` in your project.
+
+## Usage
+
+Example: (taken from `examples/intro`) Parse the expression `x+2*y^3` for `x=5/6` and `y=7/3`
+
+```
+#include <iostream>
+#include <gmpxx.h>
+#include "exparse.hpp"
+
+int main()
+{
+    Exparse parser;
+
+    parser.symbol_table =
+    {
+        {"x",5_mpq/6_mpq},
+        {"y",7_mpq/3_mpq}
+    };
+    
+    std::string expression = "x+2*y^3";
+    
+    mpq_class result = parser.parse_expression(expression);
+    
+    std::cout << result << std::endl;
+    
+    return 0;
+}
+```
+
+Compile:
+```
+$ c++ -std=c++11 -O3 -I<path/to/exparse.hpp> intro.cpp -lgmpxx -lgmp -o intro
+```
+
+Output:
+```
+1417/54
+```
+
+For further examples see the [examples folder](examples).
+
+## API Documentation
+
+### Public Fields
+
+`std::unordered_map<std::string,mpq_class> symbol_table;`
+
+An unordered map between variables (represented by a string) and their values (represented by a rational number). The symbol table is used during expression parsing to replace variables by their value.
+
+### Public Member Functions
+
+`mpq_class parse_expression(std::string& expression)`
+
+Parse the expression (represented by a string) and return a rational number.
 
 ## Authors
 
