@@ -60,6 +60,8 @@ Output:
 
 For further examples see the [examples folder](examples).
 
+A single instance of `exparse` should not be used concurrently by multiple threads. For efficiency reasons, an internal buffer which is not threadsafe is used during parsing. However, it is fine to use several instances of `exparse` concurrently.
+
 ## API Documentation
 
 ### Public Fields
