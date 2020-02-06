@@ -152,13 +152,16 @@ TEST_CASE( "Edge Cases" , "[exparse]" )
     typedef mpq_class rational_t;
     
     std::string n0 = "5^0";
+    std::string nm0 = "5^-0";
     std::string x0 = "x^0";
+    std::string xm0 = "x^-0";
     
     SECTION( "Power 0 (number)" )
     {
         Exparse parser;
         
         REQUIRE( parser.parse_expression(n0) == 1_mpq );
+        REQUIRE( parser.parse_expression(nm0) == 1_mpq );
     };
     
     SECTION( "Power 0 (symbol)" )
@@ -170,6 +173,7 @@ TEST_CASE( "Edge Cases" , "[exparse]" )
         };
 
         REQUIRE( parser.parse_expression(x0) == 1_mpq );
+        REQUIRE( parser.parse_expression(xm0) == 1_mpq );
     };
     
 };
