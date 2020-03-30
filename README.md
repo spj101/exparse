@@ -6,16 +6,16 @@
 A polynomial to rational number parser.  
 
 Supports:
-* operations `+ - * / ^`  
-* integer powers only
-* brackets are not supported
+  * operations `+ - * / ^`  
+  * integer powers only
+  * brackets are not supported
 
 ## Installation
 
 Prerequisites:
-* A C++11 compatible C++ compiler.
-* [GNU GMP Library](https://gmplib.org/) (tested for version 6.1.2)
-* (Optional, only for running certain examples) [FORM](https://github.com/vermaseren/form) (tested for version 4.2.1)
+  * A C++11 compatible C++ compiler.
+  * [GNU GMP Library](https://gmplib.org/) (tested for version 6.1.2)
+  * (Optional, only for running certain examples) [FORM](https://github.com/vermaseren/form) (tested for version 4.2.1)
 
 The exparse library is header only. Simply put the single header file somewhere reachable from your project or directly into your project tree itself then `#include "exparse.hpp"` in your project.
 
@@ -78,5 +78,4 @@ Parse the expression (represented by a string) and return a rational number.
 
 ## Authors
 
-* Stephen Jones (@spj101)
-
+  * Stephen Jones (@spj101)
