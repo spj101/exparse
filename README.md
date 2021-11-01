@@ -13,7 +13,7 @@ Supports:
 ## Installation
 
 Prerequisites:
-  * A C++11 compatible C++ compiler.
+  * A C++17 compatible C++ compiler.
   * [GNU GMP Library](https://gmplib.org/) (tested for version 6.1.2)
   * (Optional, only for running certain examples) [FORM](https://github.com/vermaseren/form) (tested for version 4.2.1)
 
