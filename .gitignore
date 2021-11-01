@@ -1,4 +1,5 @@
 # Generated Files
+.idea
 examples/binomial/binomial
 examples/formopt/formopt
 examples/*/expr.*
