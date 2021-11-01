@@ -11,7 +11,7 @@ int main()
     
     Exparse parser;
     
-    parser.symbol_table =
+    parser.substitution_table =
     {
         {"a1",252097800623_mpq/7732459473917_mpq},
         {"a2",790645490059_mpq/13730453361421_mpq},
@@ -35,8 +35,8 @@ int main()
         std::size_t delimiter_pos = line.find("=");
         std::string name = line.substr(0, delimiter_pos);
         std::string expression = line.substr(delimiter_pos+1, line.length()-delimiter_pos-2); // Last character must be ;
-        mpq_class result = parser.parse_expression(expression);
-        parser.symbol_table[name] = result;
+        mpq_class result = parser.parse_expression(expression).begin()->second;
+        parser.substitution_table[name] = result;
         std::cout << name << " = " << result << std::endl;
     }
     

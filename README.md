@@ -32,30 +32,46 @@ int main()
 {
     Exparse parser;
 
-    parser.symbol_table =
+    parser.symbol_table = {"x"};
+
+    parser.substitution_table =
     {
-        {"x",5_mpq/6_mpq},
-        {"y",7_mpq/3_mpq}
+        {"a",5_mpq/6_mpq},
+        {"b",7_mpq/3_mpq},
+        {"c",11_mpq/5_mpq}
     };
-    
-    std::string expression = "x+2*y^3";
-    
-    mpq_class result = parser.parse_expression(expression);
-    
-    std::cout << result << std::endl;
-    
+
+    std::string expression = "a+2*b^3+x*a*b";
+
+    std::map<std::vector<long long int>, mpq_class> result = parser.parse_expression(expression);
+
+    // Print symbols in order declared
+    for(auto symbol : parser.symbol_table)
+        std::cout << symbol << " ";
+    std::cout << std::endl;
+
+    // Print exponent vectors : coefficient
+    for(auto it = result.cbegin(); it != result.cend(); ++it)
+    {
+        for(auto elem : it->first)
+            std::cout << elem << " ";
+        std::cout << ": " << it->second << std::endl;
+    }
+
     return 0;
 }
 ```
 
 Compile:
 ```shell
-$ c++ -std=c++11 -O3 -I<path/to/exparse.hpp> intro.cpp -lgmpxx -lgmp -o intro
+$ c++ -std=c++17 -O3 -I<path/to/exparse.hpp> intro.cpp -lgmpxx -lgmp -o intro
 ```
 
 Output:
 ```shell
-1417/54
+x
+0 : 1417/54
+1 : 35/18
 ```
 
 For further examples see the [examples folder](examples).
@@ -66,9 +82,13 @@ A single instance of `exparse` should not be used concurrently by multiple threa
 
 ### Public Fields
 
-`std::unordered_map<std::string,mpq_class> symbol_table;`
+`std::vector<std::string> symbol_table;`
 
-An unordered map between variables (represented by a string) and their values (represented by a rational number). The symbol table is used during expression parsing to replace variables by their value.
+A vector of the names of each series variable. The code will output the coefficients of each term in the series.
+
+`std::unordered_map<std::string,mpq_class> substitution_table;`
+
+An unordered map between variables (represented by a string) and their values (represented by a rational number). The substitution table is used during expression parsing to replace variables by their value.
 
 ### Public Member Functions
 

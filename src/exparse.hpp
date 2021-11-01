@@ -7,6 +7,8 @@
 #include <memory> // shared_ptr, make_shared
 #include <cstddef> // size_t
 #include <cstring> // strcmp
+#include <vector> // vector
+#include <map> // map
 //#include <cstdlib> // atof
 
 #include <gmpxx.h>
@@ -34,6 +36,10 @@ private:
     rational_t pow_buffer;
     
     int_t int_buffer;
+
+    std::vector<int_t> symbol_orders_buffer;
+    std::size_t symbol_order_buffer;
+    bool symbol_order_altered = false;
     
     struct slice_t
     {
@@ -60,6 +66,12 @@ private:
     
     void exparse_apply(rational_t& result, const rational_t& symbol, const Operation op)
     {
+        if(symbol_order_altered)
+        {
+            symbol_order_altered = false;
+            symbol_orders_buffer[symbol_order_buffer] += 1; // exparse_apply is called when no power is set
+            return;
+        }
         switch(op)
         {
             case add: result *= symbol; break;
@@ -72,6 +84,13 @@ private:
     
     void exparse_pow(rational_t& base, const int_t& exponent, rational_t& result, Operation op)
     {
+        if(symbol_order_altered)
+        {
+            symbol_order_altered = false;
+            symbol_orders_buffer[symbol_order_buffer] += exponent;
+            return;
+        }
+
         if (exponent < integer_zero)
         {
             exparse_apply(result, rational_one, inverse); // 1/result
@@ -118,18 +137,33 @@ private:
             (*symbol.expression)[symbol.pos+symbol.len] = '\0';
         }
         
-        // Check if symbol is in symbol table
         // Note: would be nicer to use find() but does not work correctly for pointer types
         bool found = false;
-        for( const std::pair<std::string,rational_t> symbol_table_element: symbol_table)
+        // Check if symbol is in substitution table
+        for( const std::pair<std::string,rational_t> substitution_table_element: substitution_table)
         {
-            if ( strcmp(symbol_table_element.first.c_str(), symbol.expression->c_str()+symbol.pos) == 0)
+            if ( strcmp(substitution_table_element.first.c_str(), symbol.expression->c_str()+symbol.pos) == 0)
             {
-                result = symbol_table_element.second;
+                result = substitution_table_element.second;
                 found = true;
                 break;
             }
         }
+        // Check if symbol is in symbol_table
+        if(!found)
+        {
+            for( std::size_t i = 0; i < symbol_table.size(); i++)
+            {
+                if ( strcmp(symbol_table[i].c_str(), symbol.expression->c_str()+symbol.pos) == 0)
+                {
+                    symbol_order_altered = true;
+                    symbol_order_buffer = i;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
         if(!found)
         {
             // Parse symbol as rational
@@ -212,13 +246,16 @@ private:
         return;
     }
     
-    void parse_term(slice_t& term, rational_t& result)
+    void parse_term(slice_t& term)
     {
         std::size_t term_pos = term.pos;
         std::size_t term_len = term.len;
         
         // Set term to one (all symbols will be multiplied on to term)
-        result = rational_one;
+        term_buffer = rational_one;
+
+        // Reset symbol_orders_buffer
+        symbol_orders_buffer.assign(symbol_table.size() ,0);
         
         // Parse term
         std::size_t reading_point = 0;
@@ -229,7 +266,7 @@ private:
                 // Parse term
                 term.pos = term_pos+ reading_point;
                 term.len = i-reading_point;
-                parse_symbol(term, result);
+                parse_symbol(term, term_buffer);
                 
                 // Update reading point
                 reading_point = i;
@@ -243,7 +280,7 @@ private:
                 // Parse term
                 term.pos = term_pos+ reading_point;
                 term.len = i+1-reading_point;
-                parse_symbol(term, result);
+                parse_symbol(term, term_buffer);
                 
                 // Update reading point
                 reading_point = i+1;
@@ -254,14 +291,30 @@ private:
             }
         }
     }
-    
-    void parse_line(slice_t& line, rational_t& result)
+
+    void add_term(std::map<std::vector<int_t>,rational_t>& result)
+    {
+        std::map<std::vector<int_t>,rational_t>::iterator lb = result.lower_bound(symbol_orders_buffer);
+        if(lb != result.end() && !result.key_comp()(symbol_orders_buffer, lb->first))
+        {
+            // symbol_orders exists in result, add term to result
+            lb->second += term_buffer;
+        }
+        else
+        {
+            // symbol_orders does not exist in result, set term equal to term
+            result.insert(lb, std::map<std::vector<int_t>,rational_t>::value_type(symbol_orders_buffer, term_buffer));
+        }
+
+        // Reset buffers
+    }
+
+    void parse_line(slice_t& line, std::map<std::vector<int_t>,rational_t>& result)
     {
         std::size_t line_pos = line.pos;
         std::size_t line_len = line.len;
-        
-        // Set result to zero (all terms will be added to result)
-        result = rational_zero;
+
+        symbol_orders_buffer.assign(symbol_table.size(), 0); // initialise symbol_orders_buffer
 
         // Parse line
         std::size_t reading_point = 0;
@@ -272,9 +325,10 @@ private:
                 // Parse term
                 line.pos = line_pos + reading_point;
                 line.len = i-reading_point;
-                parse_term(line,term_buffer);
-                result += term_buffer;
-                
+
+                parse_term(line);
+                add_term(result);
+
                 // Update reading point
                 reading_point = i;
                 
@@ -288,9 +342,9 @@ private:
                 line.pos = line_pos + reading_point;
                 line.len = i+1-reading_point;
                 
-                parse_term(line,term_buffer);
-                result += term_buffer;
-                
+                parse_term(line);
+                add_term(result);
+
                 // Update reading point
                 reading_point = i+1;
                 
@@ -318,11 +372,12 @@ private:
     
 public:
 
-    std::unordered_map<std::string,rational_t> symbol_table;
-    
-    rational_t parse_expression(std::string& expression)
+    std::vector<std::string> symbol_table;
+    std::unordered_map<std::string,rational_t> substitution_table;
+
+    std::map<std::vector<int_t>, rational_t> parse_expression(std::string& expression)
     {
-        rational_t result = rational_zero;
+        std::map<std::vector<int_t>, rational_t> result;
         
         slice_t line;
         line.expression = std::make_shared<std::string>(expression);

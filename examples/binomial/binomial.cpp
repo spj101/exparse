@@ -11,7 +11,7 @@ int main()
     
     Exparse parser;
     
-    parser.symbol_table =
+    parser.substitution_table =
     {
         {"a1",252097800623_mpq/7732459473917_mpq},
         {"a2",790645490059_mpq/13730453361421_mpq},
@@ -33,7 +33,7 @@ int main()
     while (std::getline(infile, expression))
     {
         std::cout << "expression.length(): " << expression.length() << std::endl;
-        mpq_class result = parser.parse_expression(expression);
+        mpq_class result = parser.parse_expression(expression).begin()->second;
         std::cout << "result:" << result << std::endl;
     }
     
