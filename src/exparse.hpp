@@ -375,7 +375,7 @@ public:
     std::vector<std::string> symbol_table;
     std::unordered_map<std::string,rational_t> substitution_table;
 
-    std::map<std::vector<int_t>, rational_t> parse_expression(std::string& expression)
+    std::map<std::vector<int_t>, rational_t> parse_expression(const std::string& expression)
     {
         std::map<std::vector<int_t>, rational_t> result;
         
