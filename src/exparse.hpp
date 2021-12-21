@@ -11,31 +11,266 @@
 #include <map> // map
 //#include <cstdlib> // atof
 
-#include <gmpxx.h>
+#include <gmp.h>
+
+#include <iostream>
+
+// complex<mpq_class>
+struct mpqc_class
+{
+    mpq_t re;
+    mpq_t im;
+    
+    // Comparator Operators
+    friend bool operator==(const mpqc_class& lhs, const mpqc_class& rhs){ return (mpq_equal(lhs.re,rhs.re) && mpq_equal(lhs.im,rhs.im)); }
+    friend bool operator!=(const mpqc_class& lhs, const mpqc_class& rhs){ return !(lhs == rhs); }
+    
+    // Unary Operators
+    mpqc_class operator-() const {
+        mpq_t neg_re;
+        mpq_t neg_im;
+        mpq_init(neg_re);
+        mpq_init(neg_im);
+        mpq_neg(neg_re,this->re);
+        mpq_neg(neg_im,this->im);
+        mpqc_class neg_this(mpq_get_str(NULL,10,neg_re),mpq_get_str(NULL,10,neg_im));
+        mpq_clear(neg_re);
+        mpq_clear(neg_im);
+        return neg_this;
+    }
+    mpqc_class operator+() const { return *this; }
+
+    // Compound assignment operators
+    mpqc_class& operator+=(const mpqc_class& rhs)
+    {
+        mpq_add(this->re,this->re,rhs.re);
+        mpq_add(this->im,this->im,rhs.im);
+        return *this;
+    }
+    mpqc_class& operator-=(const mpqc_class& rhs)
+    {
+        mpq_sub(this->re,this->re,rhs.re);
+        mpq_sub(this->im,this->im,rhs.im);
+        return *this;
+    }
+    mpqc_class& operator*=(const mpqc_class& rhs)
+    {
+        mpqc_class lhs = *this;
+        
+        mpq_t nr1;
+        mpq_t nr2;
+        mpq_t ni1;
+        mpq_t ni2;
+        mpq_init(nr1);
+        mpq_init(nr2);
+        mpq_init(ni1);
+        mpq_init(ni2);
+        
+        // re = lhs.re*rhs.re - lhs.im*rhs.im
+        mpq_set(nr1,lhs.re);
+        mpq_mul(nr1,nr1,rhs.re);
+        mpq_set(nr2,lhs.im);
+        mpq_mul(nr2,nr2,rhs.im);
+        mpq_sub(nr1,nr1,nr2);
+        
+        // im = lhs.re*rhs.im + lhs.im*rhs.re
+        mpq_set(ni1,lhs.re);
+        mpq_mul(ni1,ni1,rhs.im);
+        mpq_set(ni2,lhs.im);
+        mpq_mul(ni2,ni2,rhs.re);
+        mpq_add(ni1,ni1,ni2);
+
+        mpq_set(this->re,nr1);
+        mpq_set(this->im,ni1);
+        
+        mpq_clear(nr1);
+        mpq_clear(nr2);
+        mpq_clear(ni1);
+        mpq_clear(ni2);
+
+        return *this;
+    }
+    mpqc_class& operator/=(const mpqc_class& rhs)
+    {
+        mpqc_class lhs = *this;
+        
+        mpq_t nr1;
+        mpq_t nr2;
+        mpq_t ni1;
+        mpq_t ni2;
+        mpq_t d1;
+        mpq_t d2;
+        mpq_init(nr1);
+        mpq_init(nr2);
+        mpq_init(ni1);
+        mpq_init(ni2);
+        mpq_init(d1);
+        mpq_init(d2);
+        
+        // re = lhs.re*rhs.re + lhs.im*rhs.im
+        mpq_set(nr1,lhs.re);
+        mpq_mul(nr1,nr1,rhs.re);
+        mpq_set(nr2,lhs.im);
+        mpq_mul(nr2,nr2,rhs.im);
+        mpq_add(nr1,nr1,nr2);
+        
+        // im = lhs.re*rhs.im + lhs.im*rhs.re
+        mpq_set(ni1,lhs.im);
+        mpq_mul(ni1,ni1,rhs.re);
+        mpq_set(ni2,lhs.re);
+        mpq_mul(ni2,ni2,rhs.im);
+        mpq_sub(ni1,ni1,ni2);
+        
+        // den = rhs.re*rhs.re + rhs.im*rhs.im
+        mpq_set(d1,rhs.re);
+        mpq_mul(d1,d1,rhs.re);
+        mpq_set(d2,rhs.im);
+        mpq_mul(d2,d2,rhs.im);
+        mpq_add(d1,d1,d2);
+        
+        mpq_div(nr1,nr1,d1);
+        mpq_div(ni1,ni1,d1);
+        
+        mpq_set(this->re,nr1);
+        mpq_set(this->im,ni1);
+        
+        mpq_clear(nr1);
+        mpq_clear(nr2);
+        mpq_clear(ni1);
+        mpq_clear(ni2);
+        mpq_clear(d1);
+        mpq_clear(d2);
+
+        return *this;
+    }
+
+    // Binary operators
+    friend mpqc_class operator+(mpqc_class lhs, const mpqc_class& rhs)
+    {
+        lhs += rhs;
+        return lhs;
+    }
+    friend mpqc_class operator-(mpqc_class lhs, const mpqc_class& rhs)
+    {
+        lhs -= rhs;
+        return lhs;
+    }
+    friend mpqc_class operator*(mpqc_class lhs, const mpqc_class& rhs)
+    {
+        lhs *= rhs;
+        return lhs;
+    }
+    friend mpqc_class operator/(mpqc_class lhs, const mpqc_class& rhs)
+    {
+        lhs /= rhs;
+        return lhs;
+    }
+    
+    friend std::ostream& operator<<(std::ostream& os, const mpqc_class& num)
+    {
+        os << "(" << mpq_get_str(NULL,10,num.re) << "," << mpq_get_str(NULL,10,num.im) << ")"; // std::complex<> style output
+        return os;
+    }
+    
+    mpqc_class& operator= (const mpqc_class& rhs)
+    {
+        mpq_init(this->re);
+        mpq_init(this->im);
+        mpq_set(this->re,rhs.re);
+        mpq_set(this->im,rhs.im);
+        return *this;
+    };
+    
+    mpqc_class& operator=(mpqc_class&& rhs)
+    {
+        mpq_init(this->re);
+        mpq_init(this->im);
+        mpq_set(this->re,rhs.re);
+        mpq_set(this->im,rhs.im);
+        return *this;
+    }
+
+    
+    // Constructors
+    mpqc_class() {
+        mpq_init(this->re);
+        mpq_init(this->im);
+    };
+    mpqc_class(const char* re) {
+        mpq_init(this->re);
+        mpq_init(this->im);
+        mpq_set_str(this->re,re,10);
+        mpq_canonicalize(this->re);
+    };
+    mpqc_class(const char* re, const char* im){
+        mpq_init(this->re);
+        mpq_init(this->im);
+        mpq_set_str(this->re,re,10);
+        mpq_set_str(this->im,im,10);
+        mpq_canonicalize(this->re);
+        mpq_canonicalize(this->im);
+    };
+    mpqc_class(double re) {
+        mpq_init(this->re);
+        mpq_init(this->im);
+        mpq_set_d(this->re,re);
+        mpq_canonicalize(this->re);
+    };
+    mpqc_class(double re, double im){
+        mpq_init(this->re);
+        mpq_init(this->im);
+        mpq_set_d(this->re,re);
+        mpq_set_d(this->im,im);
+        mpq_canonicalize(this->re);
+        mpq_canonicalize(this->im);
+    };
+    // Copy Constructor
+    mpqc_class(const mpqc_class& other)
+    {
+        mpq_init(this->re);
+        mpq_init(this->im);
+        mpq_set(this->re,other.re);
+        mpq_set(this->im,other.im);
+    };
+    // Move Constructor
+    mpqc_class(mpqc_class&& other)
+    {
+        mpq_init(this->re);
+        mpq_init(this->im);
+        mpq_set(this->re,other.re);
+        mpq_set(this->im,other.im);
+    }
+    // Destructor
+    ~mpqc_class()
+    {
+        mpq_clear(this->re);
+        mpq_clear(this->im);
+    };
+};
 
 class Exparse
 {
 private:
     
-    typedef mpq_class rational_t;
+    typedef mpqc_class rational_t;
     typedef long long int int_t;
     
     enum Operation { add, subtract, multiply, divide, inverse};
     
-    const rational_t rational_minus_one  = -1;
-    const rational_t rational_zero = 0;
-    const rational_t rational_one = 1;
-    const rational_t rational_two = 2;
+    const rational_t rational_minus_one  = mpqc_class("-1");
+    const rational_t rational_zero = mpqc_class("0");
+    const rational_t rational_one = mpqc_class("1");
+    const rational_t rational_two = mpqc_class("2");
     const int_t integer_zero = 0;
     const int_t integer_one = 1;
     const int_t integer_two = 2;
     
-    rational_t term_buffer;
-    rational_t symbol_buffer;
-    rational_t number_buffer;
-    rational_t pow_buffer;
+    rational_t term_buffer = rational_zero;
+    rational_t symbol_buffer = rational_zero;
+    rational_t number_buffer = rational_zero;
+    rational_t pow_buffer = rational_zero;
     
-    int_t int_buffer;
+    int_t int_buffer = integer_one;
 
     std::vector<int_t> symbol_orders_buffer;
     std::size_t symbol_order_buffer;
@@ -393,15 +628,6 @@ public:
     Exparse()
     {
         // Allow buffer sizes to be set?
-        
-        // Rational buffers
-        term_buffer = rational_zero;
-        symbol_buffer = rational_zero;
-        number_buffer = rational_zero;
-        pow_buffer = rational_zero;
-        
-        // Integer buffers
-        int_buffer = integer_one;
     }
     
 };

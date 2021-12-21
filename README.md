@@ -25,7 +25,6 @@ Example: (taken from `examples/intro`) Parse the expression `x+2*y^3` for `x=5/6
 
 ```cpp
 #include <iostream>
-#include <gmpxx.h>
 #include "exparse.hpp"
 
 int main()
@@ -36,14 +35,14 @@ int main()
 
     parser.substitution_table =
     {
-        {"a",5_mpq/6_mpq},
-        {"b",7_mpq/3_mpq},
-        {"c",11_mpq/5_mpq}
+        {"a","5/6"},
+        {"b","7/3"},
+        {"c","11/5"}
     };
 
     std::string expression = "a+2*b^3+x*a*b";
 
-    std::map<std::vector<long long int>, mpq_class> result = parser.parse_expression(expression);
+    std::map<std::vector<long long int>, mpqc_class> result = parser.parse_expression(expression);
 
     // Print symbols in order declared
     for(auto symbol : parser.symbol_table)
@@ -64,14 +63,14 @@ int main()
 
 Compile:
 ```shell
-$ c++ -std=c++17 -O3 -I<path/to/exparse.hpp> intro.cpp -lgmpxx -lgmp -o intro
+$ c++ -std=c++17 -O3 -I<path/to/exparse.hpp> intro.cpp -lgmp -o intro
 ```
 
 Output:
 ```shell
 x
-0 : 1417/54
-1 : 35/18
+0 : (1417/54,0)
+1 : (35/18,0)
 ```
 
 For further examples see the [examples folder](examples).
@@ -86,15 +85,15 @@ A single instance of `exparse` should not be used concurrently by multiple threa
 
 A vector of the names of each series variable. The code will output the coefficients of each term in the series.
 
-`std::unordered_map<std::string,mpq_class> substitution_table;`
+`std::unordered_map<std::string,mpqc_class> substitution_table;`
 
 An unordered map between variables (represented by a string) and their values (represented by a rational number). The substitution table is used during expression parsing to replace variables by their value.
 
 ### Public Member Functions
 
-`mpq_class parse_expression(std::string& expression)`
+`std::map<std::vector<int_t>, rational_t> parse_expression(const std::string& expression)`
 
-Parse the expression (represented by a string) and return a rational number.
+Parse the expression (represented by a string) and return a map of symbol powers to rational numbers. Each element of the map represents a term in the expression, the symbol powers represent the power of each symbol in the `symbol_table` and the rational numbers represent their coefficient.
 
 ## Authors
 

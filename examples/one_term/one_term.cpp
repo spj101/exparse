@@ -1,5 +1,4 @@
 #include <iostream>
-#include <gmpxx.h>
 #include "exparse.hpp"
 
 int main()
@@ -10,14 +9,14 @@ int main()
 
     parser.substitution_table =
     {
-        {"a",5_mpq/6_mpq},
-        {"b",7_mpq/3_mpq},
-        {"c",11_mpq/5_mpq}
+        {"a","5/6"},
+        {"b","7/3"},
+        {"c","11/5"}
     };
     
     std::string expression = "a+2*b^3+a*b";
  
-    std::map<std::vector<long long int>, mpq_class> result = parser.parse_expression(expression);
+    std::map<std::vector<long long int>, mpqc_class> result = parser.parse_expression(expression);
 
     std::cout << result.begin()->second << std::endl;
 

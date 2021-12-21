@@ -1,15 +1,13 @@
 #include <iostream>
-#include <gmpxx.h>
 #include "exparse.hpp"
-
 #include "series.hpp"
 
-typedef std::map<std::vector<long long int>, mpq_class> expression_t;
 typedef std::vector<long long int> powerlist_t;
+typedef mpqc_class rational_t;
+typedef std::map<powerlist_t, rational_t> expression_t;
 
 //template<typename T> using nested_series_t = secdecutil::Series<T>; // 1 variable
 template<typename T> using nested_series_t = secdecutil::Series<secdecutil::Series<T>>; // 2 variable (etc...)
-
 
 template<typename T>
 struct ex_to_nested_series
@@ -60,7 +58,7 @@ struct ex_to_nested_series<secdecutil::Series<T>>
                 subexpression[powerlist] = it->second;
             }
             if(subexpression.empty())
-                subexpression[powerlist_t( expression.begin()->first.size() - 1, 0)] = 0;
+                subexpression[powerlist_t( expression.begin()->first.size() - 1, 0)] = "0";
             content.push_back
             (
                 ex_to_nested_series<T>::convert
@@ -87,9 +85,9 @@ int main()
 
     parser.substitution_table =
     {
-        {"a",5_mpq/6_mpq},
-        {"b",7_mpq/3_mpq},
-        {"c",11_mpq/5_mpq}
+        {"a","5/6"},
+        {"b","7/3"},
+        {"c","11/5"}
     };
     
     std::string expression = "a+2*b^3+x+2*x+x*2+c^3+2*c^3+a*x+b^2*c^2*x^5+10*x^0+y+15*y^2";
@@ -106,17 +104,17 @@ int main()
     {
         for(auto elem : it->first)
             std::cout << elem << " ";
-        std::cout << ": " << it->second << " (" << it->second.get_d() << ")" << std::endl;
+        std::cout << ": " << it->second << std::endl;
     }
 
-    nested_series_t<mpq_class> result_series =
-        ex_to_nested_series<nested_series_t<mpq_class>>::convert
+    nested_series_t<rational_t> result_series =
+        ex_to_nested_series<nested_series_t<rational_t>>::convert
         (
             result,
             parser.symbol_table,
             {7,3}
         );
-    
+
     std::cout << result_series << std::endl;
 
     return 0;

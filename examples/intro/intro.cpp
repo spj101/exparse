@@ -1,5 +1,4 @@
 #include <iostream>
-#include <gmpxx.h>
 #include "exparse.hpp"
 
 int main()
@@ -10,14 +9,14 @@ int main()
 
     parser.substitution_table =
     {
-        {"a",5_mpq/6_mpq},
-        {"b",7_mpq/3_mpq},
-        {"c",11_mpq/5_mpq}
+        {"a",mpqc_class("5/6","0")},
+        {"b",mpqc_class("7/3","0")},
+        {"c",mpqc_class("0","11/5")}
     };
     
-    std::string expression = "a+2*b^3+x*a*b";
+    std::string expression = "a+2*b^3+x*a*b+c";
  
-    std::map<std::vector<long long int>, mpq_class> result = parser.parse_expression(expression);
+    std::map<std::vector<long long int>, mpqc_class> result = parser.parse_expression(expression);
     
     // Print symbols in order declared
     for(auto symbol : parser.symbol_table)
